@@ -6,16 +6,17 @@ exports.CreateExpense =  async(req,res)=>{
 
     try{
             const data = req.body;
-
             const result = await expensemodel.create({
                 amount: data.amount,
                 category:data.category,
                 type:data.type
             })           
-            res.status(200).send("expesne added successfuly")
+            res.status(200).json({message:"expesne added successfuly",success:true})
            
         }catch(error){
-            res.status(400).send(error);
+           const message = "Error "+eror
+            res.status(200).json({message:message,success:false})
+           
         }
 }
 
@@ -27,12 +28,12 @@ exports.UpdateExpense = async(req,res)=>{
             const  result = await expensemodel.findByIdAndUpdate(req.params.id,data,{returnDocument:"after"});
 
             if(result){
-              res.status(200).send("record updated successfully");
+              res.status(200).json({message:"record updated successfully",success:true});
             }else{
-                  res.status(200).send("Thier is something issue");
+                  res.status(400).json({message:"Something went wrong",success:false});
             }
             }catch(error){
-                res.status(500).send(error);
+                res.status(500).json({message:error,success:false});
             }
 
 }
@@ -70,14 +71,30 @@ exports.GetALlExpense =async(req,res)=>{
 
         // delete
  exports.DeleteExpense =async(req,res)=>{
+
     try{
     const result = await expensemodel.findByIdAndDelete(req.params.id)
     if(result){
-        res.status(200).send("Deleted successfully");
+        res.status(200).json(
+          {
+            mesage:"Deleted successfully",
+            success:true
+          }
+    );
     }else{
-        res.status(400).send("Thier is something issue");
+        res.status(400).json(
+             {
+                mesage:"Expense not found",
+                success:false
+            }
+        );
     }
     }catch(error){
-        res.status(500).send(error);
+        res.status(500).json(
+             {
+                mesage:"something went while deleting",
+                success:false
+            }
+        );
     }
         }

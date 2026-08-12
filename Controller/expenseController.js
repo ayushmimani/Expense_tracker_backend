@@ -97,4 +97,38 @@ exports.GetALlExpense =async(req,res)=>{
             }
         );
     }
-        }
+}
+
+// bulk upload
+exports.bulkupload =async (req,res)=>{
+  try{
+
+     const {expense} = req.body;
+       res.send(expense)
+     if(!expense || expense.lenght==0){
+        res.status(400).json({
+            success:false,
+            message:"No data found to uplaod"
+        })
+     }
+
+     const result = await expensemodel.insertMany(expense);
+     if(result){
+        res.status(200).json({
+            success:true,
+            message:"Bulk upload successfully"
+        })
+     }else{
+         res.status(400).json({
+            success:false,
+            message:"something error while bulk upload"
+        })
+     }
+     
+  }catch(error){
+    res.status(500).json({
+        message:error,
+        success:false
+    })
+  }
+} 

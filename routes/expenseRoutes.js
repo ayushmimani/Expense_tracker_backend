@@ -15,7 +15,7 @@ ExpenseRouter.get('/',GetALlExpense);
 ExpenseRouter.get('/:id',GetExpense);
 ExpenseRouter.post('/',CreateExpense);
 ExpenseRouter.put('/:id',UpdateExpense);
-ExpenseRouter.delete('/:id',DeleteExpense);
+ExpenseRouter.delete('/',DeleteExpense);
 ExpenseRouter.post('/bulk',bulkupload);
 
 module.exports = ExpenseRouter;

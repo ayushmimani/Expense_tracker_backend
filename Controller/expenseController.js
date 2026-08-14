@@ -73,7 +73,9 @@ exports.GetALlExpense =async(req,res)=>{
  exports.DeleteExpense =async(req,res)=>{
 
     try{
-    const result = await expensemodel.findByIdAndDelete(req.params.id)
+    const {ids}= req.body;
+    // Delete all documents whose _id exists inside this ids array $in  match any value inside this array
+    const result = await expensemodel.deleteMany({_id:{$in : ids}})
     if(result){
         res.status(200).json(
           {
@@ -103,18 +105,21 @@ exports.GetALlExpense =async(req,res)=>{
 exports.bulkupload =async (req,res)=>{
   try{
 
-     const {expense} = req.body;
-       res.send(expense)
-     if(!expense || expense.lenght==0){
+     const {bulkexpense} = req.body;
+       console.log(bulkexpense);
+       console.log("bulk upload node");
+       
+       
+     if(!bulkexpense || bulkexpense.lenght==0){
         res.status(400).json({
             success:false,
             message:"No data found to uplaod"
         })
      }
 
-     const result = await expensemodel.insertMany(expense);
+     const result = await expensemodel.insertMany(bulkexpense);
      if(result){
-        res.status(200).json({
+        res.status(201).json({
             success:true,
             message:"Bulk upload successfully"
         })

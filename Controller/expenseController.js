@@ -11,10 +11,10 @@ exports.CreateExpense =  async(req,res)=>{
                 category:data.category,
                 type:data.type
             })           
-            res.status(200).json({message:"expesne added successfuly",success:true})
+            res.status(200).json({message:"expesne added successfuly",success:true,data:result})
            
         }catch(error){
-           const message = "Error "+eror
+           const message = "Error "+error
             res.status(200).json({message:message,success:false})
            
         }
@@ -110,18 +110,19 @@ exports.bulkupload =async (req,res)=>{
        console.log("bulk upload node");
        
        
-     if(!bulkexpense || bulkexpense.lenght==0){
-        res.status(400).json({
+     if(!bulkexpense || bulkexpense.length==0){
+       return res.status(400).json({
             success:false,
             message:"No data found to uplaod"
         })
      }
 
      const result = await expensemodel.insertMany(bulkexpense);
-     if(result){
+     if(result  && result.length > 0){
         res.status(201).json({
             success:true,
-            message:"Bulk upload successfully"
+            message:"Bulk upload successfully",
+            data:result
         })
      }else{
          res.status(400).json({
@@ -132,7 +133,7 @@ exports.bulkupload =async (req,res)=>{
      
   }catch(error){
     res.status(500).json({
-        message:error,
+        message:error.message,
         success:false
     })
   }

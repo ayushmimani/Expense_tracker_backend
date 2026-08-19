@@ -2,6 +2,7 @@ const express =require('express');
 const cors =require('cors');
 
 const ExpenseRouter = require("./routes/expenseRoutes")
+const authrouter =require("./routes/userAuthRoutes");
 
 const app =express();
 
@@ -19,5 +20,6 @@ app.use((req,res,next)=>{
 })
 
 app.use('/api/expense',ExpenseRouter);
+//app.use("/api/auth",authrouter)
 
 module.exports = app

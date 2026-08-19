@@ -20,6 +20,6 @@ app.use((req,res,next)=>{
 })
 
 app.use('/api/expense',ExpenseRouter);
-//app.use("/api/auth",authrouter)
+app.use("/api/auth",authrouter)
 
 module.exports = app

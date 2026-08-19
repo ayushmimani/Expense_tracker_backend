@@ -1,11 +1,21 @@
-const express = require("express");
-const app = express();
+require('dotenv').config();
+const mongoose = require('mongoose');
+const UserModel = require('./models/User');   // apna actual path daalo
 
-app.get("/", (req, res) => {
-  console.log("hit");
-  res.send("Test working");
-});
-
-app.listen(5000, "0.0.0.0", () => {
-  console.log("Test server running on 5000");
+mongoose.connect(process.env.MONGO_URI).then(async () => {
+    console.log("DB connected, creating user...");
+    
+    try {
+        const user = await UserModel.create({
+            name: "Test",
+            email: "test123@example.com",
+            password: "test123",
+            gender: "male"
+        });
+        console.log("SUCCESS:", user);
+    } catch (err) {
+        console.log("FULL ERROR:", err);
+    }
+    
+    process.exit();
 });

@@ -60,12 +60,15 @@ try{
         }
     })
     }
-
+console.log("before create");
     const user = await UserModel.create({
-        name,email,password
+        name,email,password,gender
     })
-
+console.log("after create");
     if(user){
+         console.log("before token");
+         const token=generateToken(user._id)
+          console.log("after token");
         return res.status(200).json({
             status:true,
             data:{
@@ -73,7 +76,7 @@ try{
                 id:user._id,
                 email:user.email,
                 name:user.name,
-                token:generateToken(user._id)
+                token,
             }
         })
     }
@@ -82,7 +85,7 @@ try{
            return res.status(400).json({
              status:false,
                 data:{
-                    message:"somthing went wrong "+error
+                    message:"somthing went wrong89 "+error
                 }
           })
     }

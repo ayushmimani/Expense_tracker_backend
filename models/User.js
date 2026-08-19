@@ -1,4 +1,4 @@
-const {mongoose } = require("mongoose");
+const mongoose  = require("mongoose");
 const bcrypt = require("bcrypt");
 
 
@@ -7,12 +7,12 @@ const UserModel = new mongoose.Schema({
     name:{
         type:String,
         required:true,
-        min:6
+        
     },
     email:{
         type:String,
         unique:true,
-        reqiored:true,
+        required:true,
     },
     password:{
         type:String,
@@ -30,12 +30,13 @@ const UserModel = new mongoose.Schema({
 
 // before save it is run that funciton or check if password not modified than not excecute further becasue existing hash again hah 
 // and user cant login ifnew password than hash
- UserModel.pre('save',async function(next){
-    if(!this.iModified(this.password)) return next();
+ UserModel.pre('save',async function(){
+    
+    if(!this.isModified("password"))  return;
 
     const salt = await bcrypt.genSalt(10);
-     this.password = await bcrypt(this.password,salt);
-     return next();
+     this.password = await bcrypt.hash(this.password,salt);
+    
 
  })
 

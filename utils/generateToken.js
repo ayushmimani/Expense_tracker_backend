@@ -1,10 +1,12 @@
-import jwt from "jsonwebtoken"
+// import jwt from "jsonwebtoken"
 
+const jwt  =require("jsonwebtoken")
 
 const generateToken = async(userid)=>{
-    return token = await jwt.sign({id:userid},process.env.SECRET_JWT,{
+    return  await jwt.sign({id:userid},process.env.SECRET_JWT,{
         expiresIn:'1d'
     });
 }
 
-export default generateToken
+module.exports = generateToken
+//export default generateToken

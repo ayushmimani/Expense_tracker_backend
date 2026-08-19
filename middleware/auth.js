@@ -9,12 +9,12 @@ const auth = async (req,res,next)=>{
              throw new Error("Token is missing");
          }
 
-         const decodedid = await jwt .verify(token,process.env.SECRET_JWT);
-          const {_id} = decodedid
+         const decodedid = await jwt.verify(token,process.env.SECRET_JWT);
+         const {_id} = decodedid
          const user = await UserModel.findById(_id);
          if(!user){
             return res.status(400).json({
-                satus:false,
+                status:false,
                 data:{
                     message:"User not found"
                 }

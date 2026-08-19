@@ -59,3 +59,49 @@
 # System	Import	Export
 - CommonJS (jo tum baaki jagah use kar rahe ho)	require(...)	  module.exports = ...
 - ES Modules	import ... from ...	   export default ...
+
+
+## ⚠️ Mongoose `pre('save')` hook — async vs next() (IMPORTANT)
+
+**Rule:** Never mix `async` function with `next` parameter in Mongoose hooks.
+Causes: `TypeError: next is not a function`
+
+### ❌ Wrong (async + next mixed)
+```js
+UserModel.pre('save', async function(next){
+    if(!this.isModified("password")) return next();
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
+    return next();
+})
+```
+
+### ✅ Correct (async, no next)
+```js
+UserModel.pre('save', async function(){
+    if(!this.isModified("password")) return;
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
+});
+```
+
+### Why it works without `next()`
+- `async` function automatically returns a **Promise**.
+- Mongoose tracks that Promise internally — when it **resolves** (function returns/ends), Mongoose treats it as "done, proceed with save."
+- No manual signal (`next()`) needed — the Promise resolving *is* the signal.
+
+### Two valid patterns (don't mix)
+| Style | Use `next`? | Use `async/await`? |
+|---|---|---|
+| Callback-based | ✅ Yes — call `next()` when done | ❌ No |
+| Async/Promise-based | ❌ No — just `return`/`throw` | ✅ Yes |
+
+### Don't confuse with Express middleware `next`
+```js
+// Express middleware — next() IS required, unrelated to Mongoose
+const auth = async (req, res, next) => {
+    ...
+    next(); // tells Express to move to next handler — always needed here
+}
+```
+Express doesn't auto-track Promises like Mongoose hooks do — `next()` must always be called manually in Express middleware/routes, regardless of `async`.

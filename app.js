@@ -1,17 +1,22 @@
 const express =require('express');
 const cors =require('cors');
-
+const cookieParser = require('cookie-parser');
 const ExpenseRouter = require("./routes/expenseRoutes")
 const authrouter =require("./routes/userAuthRoutes");
 
 const app =express();
 
-app.use(cors());
+// app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:5173',
+  credentials: true
+}));
 app.use(express.json());
+app.use(cookieParser())
+
+
 
 app.get("/", (req, res) => {
-    console.log("hooo");
-    
     res.send("Server is working1");
 });
 app.use((req,res,next)=>{

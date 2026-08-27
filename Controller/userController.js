@@ -5,24 +5,28 @@ exports.login = async (req,res)=>{
 
 try{
     const {email,password} = req.body;
- 
+     
     const user = await UserModel.findOne({email});
     if(!user || !(await user.matchpassword(password))) {
         return res.status(400).json({
            status:false,
-          data:{
-             message:"Invalid login credentials "
-          }
+            message:"Invalid login credentials "
         })
       }   
-
+      const accesstoken= generateToken(user._id);
+      res.cookie('token',accesstoken,{
+        httpOnly:true,
+        sameSite: 'strict',
+        maxAge: 24 * 60 *60*1000
+      })
 
       return res.status(200).json({
           status:true,
+         message:"Login successfully",
           data:{
             id:user._id,
             email:user.email,
-            token:generateToken(user._id)
+            name:user.name
           }
       })
 
@@ -30,9 +34,7 @@ try{
     catch(error){
         res.status(500).json({
             status:false,
-            data:{
-                message:"Something went wrong "+error
-            }
+            message:"Something went wrong , Please try again"
         })
     }
    
@@ -46,37 +48,32 @@ try{
     const {name,email,password,gender} = req.body;
     if(!name || !email || !password || !gender) return res.status(400).json({
         status:false,
-        data:{
-            message:"fields are required"
-        }
+         message:"fields are required"
     })
 
     const userExists  = await UserModel.findOne({email})
     if(userExists){
     return res.status(400).json({
         status:false,
-        data:{
-            message:"User already exist"
-        }
+          message:"User already exist"
     })
     }
-console.log("before create");
+
     const user = await UserModel.create({
         name,email,password,gender
     })
-console.log("after create");
+
     if(user){
-         console.log("before token");
+        
          const token=generateToken(user._id)
           console.log("after token");
         return res.status(200).json({
             status:true,
+              message:"user added successfully",
             data:{
-                message:"useradded successfully",
                 id:user._id,
                 email:user.email,
                 name:user.name,
-                token,
             }
         })
     }
@@ -85,7 +82,7 @@ console.log("after create");
            return res.status(400).json({
              status:false,
                 data:{
-                    message:"somthing went wrong89 "+error
+                    message:"somthing went wrong "+error
                 }
           })
     }

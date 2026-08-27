@@ -10,8 +10,11 @@ const auth = async (req,res,next)=>{
          }
 
          const decodedid = await jwt.verify(token,process.env.SECRET_JWT);
-         const {_id} = decodedid
-         const user = await UserModel.findById(_id);
+
+         const {id} = decodedid
+         console.log(id);
+         
+         const user = await UserModel.findById(id);
          if(!user){
             return res.status(400).json({
                 status:false,
@@ -35,4 +38,4 @@ const auth = async (req,res,next)=>{
     }
 }
 
-module.exports = {auth};
+module.exports = auth;

@@ -4,12 +4,13 @@ const expensemodel = require("../models/Expense");
 // create
 exports.CreateExpense =  async(req,res)=>{
 
-    try{
+    try{            
             const data = req.body;
             const result = await expensemodel.create({
                 amount: data.amount,
                 category:data.category,
-                type:data.type
+                type:data.type,
+                user:req.user._id
             })           
             res.status(200).json({message:"expesne added successfuly",success:true,data:result})
            
@@ -24,7 +25,7 @@ exports.CreateExpense =  async(req,res)=>{
 exports.UpdateExpense = async(req,res)=>{
            
        try{
-              const data =req.body;
+            const data =req.body;
             const  result = await expensemodel.findByIdAndUpdate(req.params.id,data,{returnDocument:"after"});
 
             if(result){
@@ -42,7 +43,8 @@ exports.UpdateExpense = async(req,res)=>{
 exports.GetALlExpense =async(req,res)=>{
            console.log("Get all expense API called");
             try{
-                  const result =  await expensemodel.find();
+                 const id = req.user._id;
+                  const result =  await expensemodel.find({user:id});
                 if(result){
                     res.status(200).send(result);
                 }else{
@@ -75,7 +77,7 @@ exports.GetALlExpense =async(req,res)=>{
     try{
     const {ids}= req.body;
     // Delete all documents whose _id exists inside this ids array $in  match any value inside this array
-    const result = await expensemodel.deleteMany({_id:{$in : ids}})
+    const result = await expensemodel.deleteMany({_id:{$in : ids},user:req.user._id})
     if(result){
         res.status(200).json(
           {
@@ -117,7 +119,12 @@ exports.bulkupload =async (req,res)=>{
         })
      }
 
-     const result = await expensemodel.insertMany(bulkexpense);
+     const bulkwithuser= bulkexpense.map((row)=>({
+          ...row,
+          user:req.user._id
+     }))
+
+     const result = await expensemodel.insertMany(bulkwithuser);
      if(result  && result.length > 0){
         res.status(201).json({
             success:true,

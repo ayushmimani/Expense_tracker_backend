@@ -105,3 +105,13 @@ const auth = async (req, res, next) => {
 }
 ```
 Express doesn't auto-track Promises like Mongoose hooks do — `next()` must always be called manually in Express middleware/routes, regardless of `async`.
+
+
+# install  cookie-parser
+# use middleware app.use(cookieParser()).
+
+# create a getme route when page referh than that route caals and get user info and maintain userinfo in redux 
+
+# jest — testing framework (test likhne aur run karne ke liye)
+# supertest — API endpoints ko bina real server chalaye test karne ke liye
+# mongodb-memory-server — fake temporary MongoDB, taaki real database touch na ho

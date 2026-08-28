@@ -119,3 +119,5 @@ Express doesn't auto-track Promises like Mongoose hooks do — `next()` must alw
 
 -- mongodb-memory-server	RAM mein ek fake temporary MongoDB banata hai — test ke baad khatam ho jaata  -- hai. Real database ko chhuta bhi nahi.upertest	Bina real server chalaye (app.listen()), Express app -- pe directly HTTP requests bhejta hai
 -- jest	Poora test run + assertions karta hai (jo already samajh chuke ho)
+
+# npm install groq-sdk

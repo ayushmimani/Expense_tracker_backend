@@ -3,6 +3,7 @@ const cors =require('cors');
 const cookieParser = require('cookie-parser');
 const ExpenseRouter = require("./routes/expenseRoutes")
 const authrouter =require("./routes/userAuthRoutes");
+const route =require("./routes/aiRoutes");
 
 const app =express();
 
@@ -14,8 +15,8 @@ const app =express();
 // }));
 app.use(cors({
   origin: [
-    "http://localhost:5173",
-    "https://expense-tacker-front.vercel.app"
+    "http://localhost:5174",
+   // "https://expense-tacker-front.vercel.app"
   ],
   credentials: true
 }));
@@ -30,5 +31,6 @@ app.get("/", (req, res) => {
 
 app.use('/api/expense',ExpenseRouter);
 app.use("/api/auth",authrouter)
+app.use("/api/ai",route)
 
 module.exports = app

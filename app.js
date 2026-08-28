@@ -7,8 +7,16 @@ const authrouter =require("./routes/userAuthRoutes");
 const app =express();
 
 // app.use(cors());
+// app.use(cors({
+//   origin: 'http://localhost:5173', "https://expense-tacker-front.vercel.app/" 
+
+//   credentials: true
+// }));
 app.use(cors({
-  origin: 'http://localhost:5173',
+  origin: [
+    "http://localhost:5173",
+    "https://expense-tacker-front.vercel.app"
+  ],
   credentials: true
 }));
 app.use(express.json());
@@ -19,10 +27,6 @@ app.use(cookieParser())
 app.get("/", (req, res) => {
     res.send("Server is working1");
 });
-app.use((req,res,next)=>{
-    console.log("express tracking is working");
-    next();
-})
 
 app.use('/api/expense',ExpenseRouter);
 app.use("/api/auth",authrouter)

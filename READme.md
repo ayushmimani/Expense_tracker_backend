@@ -1,117 +1,226 @@
-# create config folder
-  ## db.jd
+# 💰 AI-Powered Personal Finance System
 
-# Controller  
-# Models
-# routes
-# app.js
-# server.js
+A full-stack personal finance management application that allows users to track expenses, analyze financial behavior, and manage data efficiently with advanced features like bulk operations and analytics.
 
-# install Express, moongose, cors, dotenv
-# install nodemon
-# install react-toastify for notification alert
-# install bcrypt
+---
 
-# create a schema 
-# write logic in controller
-# create route
+## 🚀 Features
 
+### 🔐 Authentication & Security
 
-## 🔐 Authentication (JWT)
+* JWT-based login & registration
+* Password hashing & secure authentication
+* Middleware-based route protection
+* Protected APIs and frontend routes
 
-### How it works
-- **Register/Login** → server generates a JWT (`jsonwebtoken`) signed with `JWT_SECRET`, sent back to client.
-- Client stores token (localStorage) and attaches it in every request:
-  `Authorization: Bearer <token>`
-- **Protected routes** use a `protect` middleware that verifies the token before allowing access.
+---
 
-### Password Security
-- Passwords are **never stored in plain text**.
-- `userSchema.pre("save")` hook auto-hashes password (via `bcrypt`) right before saving —
-  only runs if password field was modified (`isModified("password")`) to avoid re-hashing on every save.
-- `bcrypt.genSalt(10)` → generates random salt (10 = cost factor, security/speed tradeoff).
-- `bcrypt.hash(password, salt)` → one-way hash, cannot be reversed.
+### 💳 Expense Management
 
-### Login Verification
-- `userSchema.methods.matchPassword()` → instance method available on every fetched user document.
-- Called as `user.matchPassword(enteredPassword)` → `this` = the `user` document (JS rule: `this` = object before the dot).
-- `this.password` = already-hashed password fetched via `User.findOne()` earlier — no extra DB call inside this method.
-- `bcrypt.compare(entered, hashed)` re-hashes entered password internally and compares — returns `true`/`false`.
+* Add, update, delete expenses (CRUD)
+* Real-time UI updates using Redux
+* Categorized transactions (credit/debit)
 
-### Middleware (`protect`)
-- Reads `Authorization` header → extracts token → `jwt.verify(token, JWT_SECRET)`.
-- Decoded payload has `{ id: userId }` → fetch user from DB → attach as `req.user`.
-- If invalid/missing token → `401 Unauthorized`.
+---
 
-### Key Files
-| File | Purpose |
-|---|---|
-| `models/User.js` | Schema + password hashing + matchPassword |
-| `utils/generateToken.js` | Signs JWT with user id |
-| `controllers/authController.js` | register/login logic |
-| `middleware/authMiddleware.js` | `protect` — verifies token on protected routes |
+### 📊 Dashboard & Analytics
 
-### Why this matters (interview points)
-- Plain text passwords never touch the DB.
-- Stateless auth (no session storage needed on server).
-- Each user's data isolated via `user: req.user._id` on models.
+* Pie chart (category-wise distribution)
+* Bar chart (credit vs debit comparison)
+* Summary cards:
 
-# System	Import	Export
-- CommonJS (jo tum baaki jagah use kar rahe ho)	require(...)	  module.exports = ...
-- ES Modules	import ... from ...	   export default ...
+  * 💰 Total Credit
+  * 💸 Total Debit
+  * 💾 Balance
 
+---
 
-## ⚠️ Mongoose `pre('save')` hook — async vs next() (IMPORTANT)
+### 📁 Bulk Operations
 
-**Rule:** Never mix `async` function with `next` parameter in Mongoose hooks.
-Causes: `TypeError: next is not a function`
+* Upload expenses via CSV file
+* Bulk delete using checkbox selection
+* Select multiple rows / select all
 
-### ❌ Wrong (async + next mixed)
-```js
-UserModel.pre('save', async function(next){
-    if(!this.isModified("password")) return next();
-    const salt = await bcrypt.genSalt(10);
-    this.password = await bcrypt.hash(this.password, salt);
-    return next();
-})
+---
+
+### 🔍 Filtering
+
+* Filter by month
+* Filter by transaction type (credit/debit)
+
+---
+
+### 🔔 User Experience
+
+* Toast notifications (success/error)
+* Confirmation modal for delete
+* Responsive UI
+
+---
+
+## 🧠 Upcoming Feature
+
+* AI-based financial analyzer:
+
+  * Analyze spending patterns
+  * Suggest investment strategies
+  * Provide smart financial insights
+
+---
+
+## 🛠 Tech Stack
+
+### Frontend
+
+* React.js
+* Redux Toolkit
+* Tailwind CSS
+* Recharts
+
+### Backend
+
+* Node.js
+* Express.js
+* MongoDB (Mongoose)
+* JWT Authentication
+
+---
+
+## 📸 Screenshots
+
+> Add screenshots here
+
+* Dashboard
+* Charts
+* Bulk upload
+* Table view
+
+---
+
+## 📂 Project Structure
+
+```text id="p7l3fx"
+project-root/
+ ├── frontend/
+ │    ├── src/
+ │    ├── components/
+ │    ├── pages/
+ │    └── store/
+ │
+ ├── backend/
+ │    ├── controllers/
+ │    ├── routes/
+ │    ├── models/
+ │    └── middleware/
 ```
 
-### ✅ Correct (async, no next)
-```js
-UserModel.pre('save', async function(){
-    if(!this.isModified("password")) return;
-    const salt = await bcrypt.genSalt(10);
-    this.password = await bcrypt.hash(this.password, salt);
-});
+---
+
+## ⚙️ Setup Instructions
+
+---
+
+### 1️⃣ Clone Repository
+
+```bash id="7q1u4n"
+git clone https://github.com/ayushmimani/Expense_tacker_front
+cd Expense_tacker_front
 ```
 
-### Why it works without `next()`
-- `async` function automatically returns a **Promise**.
-- Mongoose tracks that Promise internally — when it **resolves** (function returns/ends), Mongoose treats it as "done, proceed with save."
-- No manual signal (`next()`) needed — the Promise resolving *is* the signal.
+---
 
-### Two valid patterns (don't mix)
-| Style | Use `next`? | Use `async/await`? |
-|---|---|---|
-| Callback-based | ✅ Yes — call `next()` when done | ❌ No |
-| Async/Promise-based | ❌ No — just `return`/`throw` | ✅ Yes |
+### 2️⃣ Setup Backend
 
-### Don't confuse with Express middleware `next`
-```js
-// Express middleware — next() IS required, unrelated to Mongoose
-const auth = async (req, res, next) => {
-    ...
-    next(); // tells Express to move to next handler — always needed here
-}
+```bash id="hny3vh"
+cd backend
+npm install
+npm run dev
 ```
-Express doesn't auto-track Promises like Mongoose hooks do — `next()` must always be called manually in Express middleware/routes, regardless of `async`.
 
+---
 
-# install  cookie-parser
-# use middleware app.use(cookieParser()).
+### 3️⃣ Setup Frontend
 
-# create a getme route when page referh than that route caals and get user info and maintain userinfo in redux 
+```bash id="q3f3f4"
+cd frontend
+npm install
+npm run dev
+```
 
-# jest — testing framework (test likhne aur run karne ke liye)
-# supertest — API endpoints ko bina real server chalaye test karne ke liye
-# mongodb-memory-server — fake temporary MongoDB, taaki real database touch na ho
+---
+
+## 🌐 Environment Variables
+
+### Backend (.env)
+
+```env id="knk7de"
+PORT=3000
+MONGO_URI=your_mongodb_connection
+JWT_SECRET=your_secret_key
+```
+
+---
+
+### Frontend (.env)
+
+```env id="5rrs7b"
+VITE_API_URL=http://localhost:3000/api/
+```
+
+---
+
+## 📡 API Endpoints
+
+### Auth
+
+```text id="w0s9eh"
+POST /api/auth/register
+POST /api/auth/login
+```
+
+### Expense
+
+```text id="2x6pn7"
+GET    /api/expense
+POST   /api/expense
+PUT    /api/expense/:id
+DELETE /api/expense/:id
+```
+
+### Bulk
+
+```text id="b8qptn"
+POST   /api/expense/bulk
+DELETE /api/expense/bulk
+```
+
+---
+
+## 💡 Highlights
+
+* Full-stack architecture (frontend + backend integration)
+* Efficient state management using Redux
+* File handling (CSV upload & parsing)
+* Complex UI logic (bulk selection, filtering)
+* Scalable REST API design
+
+---
+
+## 📈 Future Enhancements
+
+* AI-powered financial insights
+* Net worth tracking (accounts + investments)
+* Budget alerts & spending limits
+* Deployment (Vercel + Render)
+
+---
+
+## 👨‍💻 Author
+
+Ayush Mimani
+
+---
+
+## ⭐ Support
+
+If you like this project, give it a ⭐ on GitHub

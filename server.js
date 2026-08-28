@@ -6,6 +6,6 @@ const PORT = process.env.PORT || 3000;
 
 connectDB();
 
-  app.listen(3000, "127.0.0.1", () => {
+  app.listen(PORT, "127.0.0.1", () => {
   console.log("Raw server running on 3000");
 });

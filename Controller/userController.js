@@ -15,8 +15,10 @@ try{
       }   
       const accesstoken= generateToken(user._id);
       res.cookie('token',accesstoken,{
-        httpOnly:true,
-        maxAge: 24 * 60 *60*1000
+        httpOnly: true,
+        sameSite: "None",   // MUST
+        secure: true,
+        maxAge: 24 * 60 *60*1000,
       })
 
       return res.status(200).json({

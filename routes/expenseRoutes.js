@@ -13,7 +13,7 @@ const {
 } = require('../Controller/expenseController')
 
 ExpenseRouter.get('/',GetALlExpense);
-ExpenseRouter.get('/:id',auth,GetExpense);
+ExpenseRouter.get('/:id',GetExpense);
 ExpenseRouter.post('/',auth,CreateExpense);
 ExpenseRouter.put('/:id',auth,UpdateExpense);
 ExpenseRouter.delete('/',auth,DeleteExpense);

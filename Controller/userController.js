@@ -5,7 +5,7 @@ exports.login = async (req,res)=>{
 
 try{
     const {email,password} = req.body;
-     
+
     const user = await UserModel.findOne({email});
     if(!user || !(await user.matchpassword(password))) {
         return res.status(400).json({
@@ -16,7 +16,6 @@ try{
       const accesstoken= generateToken(user._id);
       res.cookie('token',accesstoken,{
         httpOnly:true,
-        sameSite: 'strict',
         maxAge: 24 * 60 *60*1000
       })
 

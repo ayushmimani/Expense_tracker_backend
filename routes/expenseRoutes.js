@@ -12,7 +12,7 @@ const {
     bulkupload
 } = require('../Controller/expenseController')
 
-ExpenseRouter.get('/',auth,GetALlExpense);
+ExpenseRouter.get('/',GetALlExpense);
 ExpenseRouter.get('/:id',auth,GetExpense);
 ExpenseRouter.post('/',auth,CreateExpense);
 ExpenseRouter.put('/:id',auth,UpdateExpense);

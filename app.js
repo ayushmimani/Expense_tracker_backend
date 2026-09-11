@@ -15,8 +15,8 @@ const app =express();
 // }));
 app.use(cors({
   origin: [
-    "http://localhost:5174",
-   // "https://expense-tacker-front.vercel.app"
+    "http://localhost:5173",
+    "https://expense-tacker-front.vercel.app/"
   ],
   credentials: true
 }));

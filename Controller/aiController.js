@@ -13,9 +13,10 @@ const extractFilters = async (question) => {
         content: `You extract search filters from expense questions.
 Today's date is ${today}.
 Respond ONLY with valid JSON, no markdown, no explanation.
-Format: { "startDate": "YYYY-MM-DD" | null, "endDate": "YYYY-MM-DD" | null, "category": string | null }
+Format: { "startDate": "YYYY-MM-DD" | null, "endDate": "YYYY-MM-DD" | null, "category": string | null, "type":string | null }
 If the question doesn't mention a time period, set both dates to null (means "all time").
-If it doesn't mention a category, set category to null.`,
+If qyestion ask  about expense or realted it to it than use debit and if ask about how much i got than credit type or if ask about my saveing use credit or debit 
+If it doesn't mention a category, set category to null. and write a query to fetch data from mongo db give`,
       },
       { role: "user", content: question },
     ],
@@ -39,15 +40,33 @@ const getInsights = async (req, res) => {
 
     // Step 1: extract filters
     const filters = await extractFilters(question);
+// test the extract result
+
+// return res.status(201).json(
+//     {message:"filter result",
+//       filterdata:filters
+//     }
+// )
+
 
     // Step 2: build MongoDB query, scoped to logged-in user
     const query = { user: req.user.id };
+    
     if (filters.category) {
-      query.category = { $regex: filters.category, $options: "i" };
+  //    query.category = { $regex: filters.category, $options: "i" };
+      query.category ={$regex:filters.category,$options: "i" }
     }
+
+    if(filters.type){
+        query.type={$regex:filters.type,$options:"i"}
+    }
+
+    
     if (filters.startDate || filters.endDate) {
       query.date = {};
-      if (filters.startDate) query.date.$gte = new Date(filters.startDate);
+    //   if (filters.startDate) query.date.$gte = new Date(filters.startDate);
+    //   if (filters.endDate) query.date.$lte = new Date(filters.endDate);
+     if (filters.startDate) query.date.$gte = new Date(filters.startDate);
       if (filters.endDate) query.date.$lte = new Date(filters.endDate);
     }
 

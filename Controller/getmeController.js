@@ -1,6 +1,5 @@
-const userModel = require("../models/User");
-
 exports.getme = async (req, res) => {
+      //return res.status(200).send("hlo")
     try {
         const user = req.user;   // ✅ auth middleware se already mila hua hai
 

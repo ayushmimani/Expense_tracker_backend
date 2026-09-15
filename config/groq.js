@@ -1,5 +1,5 @@
 const groq = require("groq-sdk");
 
-const Groq= new groq({apikey: process.env.groq_api_key});
+const Groq= new groq({apikey: process.env.GROQ_API_KEY});
 
 module.exports = Groq; 

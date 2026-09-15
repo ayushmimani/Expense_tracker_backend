@@ -6,7 +6,7 @@ const auth = async (req,res,next)=>{
     try {
          const {token}= req.cookies;
          if(!token){
-             throw new Error("Token is missing");
+             throw new Error("Token is missing890");
          }
 
          const decodedid = await jwt.verify(token,process.env.SECRET_JWT);
